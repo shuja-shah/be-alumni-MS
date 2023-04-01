@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const userSchema = new mongoose.Schema({
     first_name: {
       type: String,
@@ -18,23 +20,23 @@ const userSchema = new mongoose.Schema({
     },
     country: {
       type: String,
-      required: true,
+      required: false,
     },
     state: {
       type: String,
-      required: true,
+      required: false,
     },
     city: {
       type: String,
-      required: true,
+      required: false,
     },
     zip: {
       type: String,
-      required: true,
+      required: false,
     },
     phone: {
       type: String,
-      required: true,
+      required: false,
     },
     is_admin: {
       type: Boolean,
@@ -50,7 +52,7 @@ const userSchema = new mongoose.Schema({
     },
     is_active: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   });
   

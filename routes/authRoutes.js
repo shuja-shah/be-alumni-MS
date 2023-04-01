@@ -6,7 +6,9 @@ const User = require('../models/user');
 router.post('/register', async (req, res) => {
     try {
         const user = new User(req.body);
-        console.log(user);
+        if (user.is_admin) {
+            user.is_active = true;
+        }
         await user.save();
         res.status(201).send({ message: 'User created' });
     } catch (error) {
