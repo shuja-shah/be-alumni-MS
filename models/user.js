@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema({
     },
     is_student: {
         type: Boolean,
-        default: true,
+        default: false,
     },
     is_active: {
         type: Boolean,
