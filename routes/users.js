@@ -27,4 +27,29 @@ router.get('/self', authCheck, async (req, res) => {
 });
 
 
+router.put('/:userId', authCheck, async (req, res) => {
+    const userId = req.params.userId;
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['first_name', 'email', 'password', 'last_name', 'country', 'state', 'city', 'zip', 'phone', 'is_alumni', 'is_student', 'is_active', 'is_admin'];
+    const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates' });
+    }
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+
+        updates.forEach(update => user[update] = req.body[update]);
+        await user.save();
+
+        res.send(user);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+
 module.exports = router;
