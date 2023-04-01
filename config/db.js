@@ -1,20 +1,10 @@
-const mongoose = require('mongoose');
-const MONGO_URI = 'mongodb://localhost:27017';
+
+const MONGO_URI = 'mongodb+srv://admin:admin@cluster0.ljf5bov.mongodb.net/?retryWrites=true&w=majority';
 
 
-const connectDB = async () => {
-    try {
-        await mongoose.connect(MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-        });
-        console.log('MongoDB connected!');
-    } catch (err) {
-        console.error(err.message);
-        process.exit(1);
-    }
+// config.js
+module.exports = {
+    mongodb: {
+        uri: MONGO_URI,
+    },
 };
-
-module.exports = connectDB;
