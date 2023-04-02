@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
@@ -12,7 +13,27 @@ import DashboardAppPage from './pages/DashboardAppPage';
 
 // ----------------------------------------------------------------------
 
+
+export function useAuth() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  return { isAuthenticated };
+}
+
+
 export default function Router() {
+  const { isAuthenticated } = useAuth(); // <== CUSTOM HOOK
+
+  if (!isAuthenticated) {
+    return (
+      <Navigate to="/login" replace />
+    );
+  }
   const routes = useRoutes([
     {
       path: '/dashboard',
