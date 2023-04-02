@@ -1,7 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
+import { Link, Container, Typography, Divider, Stack, Button , TextField,InputAdornment, Alert, IconButton} from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -194,7 +195,7 @@ export default function RegisterPage() {
                 {mdUp && (
                     <StyledSection>
                         <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-                            Hi, Welcome Back
+                            Hello, Nice to  See you
                         </Typography>
                         <img src="/assets/illustrations/illustration_login.png" alt="login" />
                     </StyledSection>
@@ -203,15 +204,15 @@ export default function RegisterPage() {
                 <Container maxWidth="sm">
                     <StyledContent>
                         <Typography variant="h4" gutterBottom>
-                            Sign in to Alumni Management System
+                            Sign Up for Alumni Management System
                         </Typography>
 
-                        <Typography variant="body2" sx={{ mb: 5 }}>
+                        {/* <Typography variant="body2" sx={{ mb: 5 }}>
                             Don&apos;t have an account? {''}
                             <Link variant="subtitle2" to="/register">Get started</Link>
-                        </Typography>
+                        </Typography> */}
 
-                        <LoginForm />
+                        <RegisterForm />
                     </StyledContent>
                 </Container>
             </StyledRoot>

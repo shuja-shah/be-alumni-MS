@@ -9,6 +9,7 @@ import Logo from '../components/logo';
 import Iconify from '../components/iconify';
 // sections
 import { LoginForm } from '../sections/auth/login';
+import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -44,6 +45,7 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 export default function LoginPage() {
   const mdUp = useResponsive('up', 'md');
+  const navigate = useNavigate();
 
   return (
     <>
@@ -77,7 +79,7 @@ export default function LoginPage() {
 
             <Typography variant="body2" sx={{ mb: 5 }}>
               Don&apos;t have an account? {''}
-              <Link variant="subtitle2" to="/register">Get started</Link>
+              <Link variant="subtitle2" onClick={()=> navigate('/register')}>Get started</Link>
             </Typography>
 
             {/* <Stack direction="row" spacing={2}>

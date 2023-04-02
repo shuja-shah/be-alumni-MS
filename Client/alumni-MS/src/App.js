@@ -14,7 +14,7 @@ import JobPage from './pages/ProductsPage';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import Page404 from './pages/Page404';
-
+import RegisterPage from './pages/RegisterPage';
 // ----------------------------------------------------------------------
 function RequireAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -38,7 +38,7 @@ export default function App() {
           <StyledChart />
           <Routes>
             <Route exact path="/login" element={<LoginPage />} />
-            
+            <Route exact path="/register" element={<RegisterPage />} />
             <Route element={<RequireAuth />}>
               <Route exact path="/" element={<DashboardAppPage />} />
               <Route exact path="/users" element={<UserPage />} />
