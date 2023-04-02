@@ -1,12 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const cors = require('cors');
 const { mongodb } = require("./config/db");
 const bodyParser = require('body-parser');
 
 const authRoutes = require('./routes/authRoutes');
 const detRoutes = require('./routes/users');
 const jobRoutes = require('./routes/JobRoutes');
+app.use(cors());
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
