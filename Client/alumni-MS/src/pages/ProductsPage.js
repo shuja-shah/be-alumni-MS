@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 // @mui
 import {
   Card,
@@ -21,6 +21,8 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  Grid,
+  TextField,
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -31,6 +33,7 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
+import Drawer from '@mui/material/Drawer';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -73,7 +76,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserPage() {
+export default function JobPage() {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -95,6 +98,8 @@ export default function UserPage() {
   const handleCloseMenu = () => {
     setOpen(null);
   };
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -110,6 +115,7 @@ export default function UserPage() {
     }
     setSelected([]);
   };
+
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -172,6 +178,21 @@ export default function UserPage() {
     myFetch();
   }, [])
 
+  const [state, setState] = useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
 
   return (
     <>
@@ -184,9 +205,44 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             Jobs
           </Typography>
-          <Button variant="contained" >
-            New
-          </Button>
+          {['bottom'].map((anchor) => (
+            <React.Fragment key={anchor}>
+              <Button variant="contained" onClick={toggleDrawer(anchor, true)} >
+                New
+              </Button>
+
+              <Drawer
+                anchor={anchor}
+                open={state[anchor]}
+                onClose={toggleDrawer(anchor, false)}
+              >
+                <Grid container direction="column" alignItems="flex-start" sx={{ padding: '0.44rem 2rem' }}>
+                  <h1>Add A New Job</h1>
+                </Grid>
+                <Stack spacing={3}>
+                  <TextField
+                    name="Position"
+                    label="Position"
+                  />
+
+                  <TextField
+                    name="Location"
+                    label="Company"
+                  />
+                  <TextField
+                    name="Location"
+                    label="Location"
+                  />
+                  <TextField
+                    name="Description"
+                    label="Description"
+                  />
+                  {isError && <Alert severity="error">{errorMessage}</Alert>}
+                </Stack>
+              </Drawer>
+            </React.Fragment>
+          ))}
+
         </Stack>
 
         <Card>
