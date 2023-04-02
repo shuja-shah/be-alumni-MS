@@ -1,26 +1,60 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
+import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
-
 // ----------------------------------------------------------------------
+// import { ENDPOINT } from '../../pages/LoginPage';
+import { ENDPOINT } from 'src/pages/LoginPage';
+
 
 export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleClick = () => {
-    navigate('/dashboard', { replace: true });
+  const handleClick = async (e) => {
+
+    e.preventDefault();
+    if (formData.email === '' || formData.password === '') {
+      setIsError(true);
+      setErrorMessage('Please fill in all fields');
+      return;
+    }
+
+    const req = await fetch(`${ENDPOINT}/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const data = await req.json();
+    if (!req.ok) {
+      setIsError(true);
+      setErrorMessage(data.error);
+      return;
+    }
+    localStorage.setItem('token', data.token);
+    navigate('/dashboard/app', { replace: true });
   };
+
 
   return (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField name="email" label="Email address" type='email' value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        />
 
         <TextField
           name="password"
@@ -35,7 +69,10 @@ export default function LoginForm() {
               </InputAdornment>
             ),
           }}
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
         />
+        {isError && <Alert severity="error">{errorMessage}</Alert>}
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
