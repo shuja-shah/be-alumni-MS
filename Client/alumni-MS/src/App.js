@@ -38,6 +38,7 @@ export default function App() {
           <StyledChart />
           <Routes>
             <Route exact path="/login" element={<LoginPage />} />
+            
             <Route element={<RequireAuth />}>
               <Route exact path="/" element={<DashboardAppPage />} />
               <Route exact path="/users" element={<UserPage />} />
