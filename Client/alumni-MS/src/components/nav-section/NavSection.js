@@ -4,6 +4,7 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import { Box, List, ListItemText } from '@mui/material';
 //
 import { StyledNavItem, StyledNavItemIcon } from './styles';
+import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -12,6 +13,11 @@ NavSection.propTypes = {
 };
 
 export default function NavSection({ data = [], ...other }) {
+  // const [user, setUser] = useState({});
+  // useEffect(() => {
+  //   setUser(JSON.parse(localStorage.getItem('user')));
+  // }, []);
+  
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
