@@ -23,6 +23,7 @@ import {
   TablePagination,
   Grid,
   TextField,
+  Alert
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -193,7 +194,13 @@ export default function JobPage() {
     setState({ ...state, [anchor]: open });
   };
 
-
+  const [data, setData] = useState({
+    position: '',
+    company: '',
+    location: '',
+    description: '',
+  })
+  const [succ, setSucc] = useState(false);
   return (
     <>
       <Helmet>
@@ -219,25 +226,63 @@ export default function JobPage() {
                 <Grid container direction="column" alignItems="flex-start" sx={{ padding: '0.44rem 2rem' }}>
                   <h1>Add A New Job</h1>
                 </Grid>
-                <Stack spacing={3}>
+                <Stack spacing={3} sx={{ padding: '0.44rem 2rem', width: '95%' }}>
                   <TextField
                     name="Position"
                     label="Position"
+                    value={data.position}
+                    onChange={(e) => setData({ ...data, position: e.target.value })}
+
                   />
 
                   <TextField
                     name="Location"
                     label="Company"
+                    value={data.company}
+                    onChange={(e) => setData({ ...data, company: e.target.value })}
+
                   />
                   <TextField
                     name="Location"
                     label="Location"
+                    value={data.location}
+                    onChange={(e) => setData({ ...data, location: e.target.value })}
+
                   />
                   <TextField
                     name="Description"
                     label="Description"
+                    value={data.description}
+                    onChange={(e) => setData({ ...data, description: e.target.value })}
+                    multiline
                   />
                   {isError && <Alert severity="error">{errorMessage}</Alert>}
+                  {succ && <Alert severity="success">Job Added Successfully</Alert>}
+                  <Button variant="contained" onClick={async (e) => {
+                    e.preventDefault();
+                    const res = await fetch(`${ENDPOINT}/api/jobs/new`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                      },
+                      body: JSON.stringify(data)
+                    })
+                    const Rdata = await res.json();
+                    if (!res.ok) {
+                      setIsError(true);
+                      setErrorMessage(Rdata.error);
+                      console.log(Rdata);
+                      return;
+                    }
+                    setSucc(true);
+                    toggleDrawer(anchor, false);
+                    myFetch();
+
+                  }} >
+                    Save
+                  </Button>
+
                 </Stack>
               </Drawer>
             </React.Fragment>
