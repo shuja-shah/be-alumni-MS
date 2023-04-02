@@ -22,14 +22,12 @@ export default function LoginForm() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleClick = async (e) => {
-
-    e.preventDefault();
     if (formData.email === '' || formData.password === '') {
       setIsError(true);
       setErrorMessage('Please fill in all fields');
       return;
     }
-
+    e.preventDefault();
     const req = await fetch(`${ENDPOINT}/api/auth/login`, {
       method: 'POST',
       headers: {
@@ -45,7 +43,7 @@ export default function LoginForm() {
       return;
     }
     localStorage.setItem('token', data.token);
-    navigate('/');
+    navigate('/dashboard');
   };
 
 

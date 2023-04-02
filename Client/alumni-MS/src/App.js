@@ -15,17 +15,19 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import Page404 from './pages/Page404';
 import RegisterPage from './pages/RegisterPage';
+import SimpleLayout from './layouts/simple/SimpleLayout';
+import DashboardLayout from './layouts/dashboard/DashboardLayout';
 // ----------------------------------------------------------------------
 function RequireAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  let token;
-  const location = useLocation();
-  useEffect(() => {
-    token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
-  }, []);
 
-  return isAuthenticated ? <Outlet /> : <Navigate to={{ pathname: '/login', state: { from: location } }} replace />;
+  const location = useLocation();
+  // useEffect(() => {
+
+  // setIsAuthenticated(!!token);
+  // }, []);
+  const token = localStorage.getItem('token');
+  return token ? <Outlet /> : <Navigate to={{ pathname: '/login', state: { from: location } }} replace />;
 }
 
 
@@ -40,9 +42,13 @@ export default function App() {
             <Route exact path="/login" element={<LoginPage />} />
             <Route exact path="/register" element={<RegisterPage />} />
             <Route element={<RequireAuth />}>
-              <Route exact path="/" element={<DashboardAppPage />} />
-              <Route exact path="/users" element={<UserPage />} />
-              <Route exact path="/jobs" element={<JobPage />} />
+              <Route element={<SimpleLayout />}>
+                <Route element={<DashboardLayout />}>
+                  <Route exact path="/" element={<DashboardAppPage />} />
+                  <Route exact path="/users" element={<UserPage />} />
+                  <Route exact path="/jobs" element={<JobPage />} />
+                </Route>
+              </Route>
             </Route>
             <Route exact path="*" element={<Page404 />} />
           </Routes>
