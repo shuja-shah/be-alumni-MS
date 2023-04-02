@@ -7,7 +7,7 @@ import ThemeProvider from './theme';
 // components
 import { StyledChart } from './components/chart';
 import ScrollToTop from './components/scroll-to-top';
-import LoginPage from './pages/LoginPage';
+import LoginPage, { ENDPOINT } from './pages/LoginPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import UserPage from './pages/UserPage';
 import JobPage from './pages/ProductsPage';
@@ -29,11 +29,33 @@ function RequireAuth() {
   const token = localStorage.getItem('token');
   return token ? <Outlet /> : <Navigate to={{ pathname: '/login', state: { from: location } }} replace />;
 }
+const myToken = localStorage.getItem('token');
 
+const userFetch = async () => {
+  const req = await fetch(`${ENDPOINT}/api/users/self`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${myToken}`
+    }
+  });
+  const data = await req.json();
 
+  if (!req.ok) {
+    console.log('No Fetch User',data)
+    return false;
+  }
+  localStorage.setItem('user', JSON.stringify(data));
+  return data;
+}
 export default function App() {
+  useEffect(() => {
+    userFetch();
+  }, []);
   return (
+
     <HelmetProvider>
+
       <BrowserRouter>
         <ThemeProvider>
           <ScrollToTop />
