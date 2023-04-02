@@ -4,28 +4,25 @@ import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
 import account from '../../../_mock/account';
+import { useNavigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    icon: 'eva:home-fill',
-  },
+
   {
     label: 'Profile',
     icon: 'eva:person-fill',
   },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
+
 ];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
+  const user = JSON.parse(localStorage.getItem('user'));
+  const navigate = useNavigate();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -78,10 +75,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user && 'first_name' in user ? user.first_name : ''}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user && 'email' in user ? user.email : ""}
           </Typography>
         </Box>
 
@@ -89,7 +86,10 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
+            <MenuItem key={option.label} onClick={() => {
+              navigate('/profile');
+              handleClose();
+            }}>
               {option.label}
             </MenuItem>
           ))}
@@ -97,7 +97,11 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={() => {
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
+          navigate('/login');
+        }} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </Popover>
