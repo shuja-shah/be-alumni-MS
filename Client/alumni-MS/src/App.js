@@ -17,6 +17,7 @@ import Page404 from './pages/Page404';
 import RegisterPage from './pages/RegisterPage';
 import SimpleLayout from './layouts/simple/SimpleLayout';
 import DashboardLayout from './layouts/dashboard/DashboardLayout';
+import MyProfile from './pages/ProfilePage';
 // ----------------------------------------------------------------------
 function RequireAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,7 +43,7 @@ const userFetch = async () => {
   const data = await req.json();
 
   if (!req.ok) {
-    console.log('No Fetch User',data)
+    console.log('No Fetch User', data)
     return false;
   }
   localStorage.setItem('user', JSON.stringify(data));
@@ -69,6 +70,7 @@ export default function App() {
                   <Route exact path="/" element={<DashboardAppPage />} />
                   <Route exact path="/users" element={<UserPage />} />
                   <Route exact path="/jobs" element={<JobPage />} />
+                  <Route exact path="/profile" element={<MyProfile />} />
                 </Route>
               </Route>
             </Route>
