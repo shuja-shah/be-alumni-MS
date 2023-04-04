@@ -201,6 +201,7 @@ export default function JobPage() {
     description: '',
   })
   const [succ, setSucc] = useState(false);
+  const [myId, setMyId] = useState('');
   return (
     <>
       <Helmet>
@@ -307,11 +308,11 @@ export default function JobPage() {
                 />
                 <TableBody>
                   {Array.isArray(myRows) && myRows.length ? myRows.map((row) => {
-                    const { id, position, company, location, description, created_at } = row;
+                    const { _id, position, company, location, description, created_at } = row;
                     const selectedUser = selected.indexOf(position) !== -1;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
@@ -336,7 +337,10 @@ export default function JobPage() {
                         </TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                          <IconButton size="large" color="inherit" onClick={(e) => {
+                            setMyId(_id);
+                            handleOpenMenu(e)
+                          }}>
                             <Iconify icon={'eva:more-vertical-fill'} />
                           </IconButton>
                         </TableCell>
@@ -403,12 +407,23 @@ export default function JobPage() {
           },
         }}
       >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Activate
-        </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem sx={{ color: 'error.main' }} onClick={async () => {
+          const res = await fetch(`${ENDPOINT}/api/jobs/delete/${myId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+          });
+          if (!res.ok) {
+            console.log('error');
+            return;
+          }
+          myFetch();
+          handleCloseMenu();
+
+        }}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
