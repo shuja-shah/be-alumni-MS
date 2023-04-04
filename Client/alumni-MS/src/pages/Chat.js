@@ -168,9 +168,9 @@ export default function Chat() {
     const [messages, setMessages] = useState([]);
     const [currentChat, setCurrentChat] = useState({});
     const [isLoading, setIsLoading] = useState(true);
-
+    const user = JSON.parse(localStorage.getItem('user'));
     const myFetch = async () => {
-        const user = JSON.parse(localStorage.getItem('user'));
+
         const res = await fetch(`${ENDPOINT}/api/chat/chats`, {
             method: 'GET',
             headers: {
@@ -274,7 +274,20 @@ export default function Chat() {
                             <List sx={{ height: '600px', overflowY: 'auto' }}>
                                 {messages.map((message, index) => {
                                     return (
-                                        <ListItem key={index} sx={{ gap: '1rem' }} >
+                                        <ListItem key={index} sx={user._id === message.sender._id ? {
+                                            flexDirection: 'row-reverse',
+                                            width: 'fit-content',
+                                            marginLeft: 'auto',
+                                            gap: '1rem',
+                                            textAlign: 'right'
+                                        } : {
+                                            widht: 'fit-content',
+                                            marginRight: 'auto',
+                                            gap: '1rem',
+                                            textAlign: 'left'
+                                        }
+
+                                        } >
                                             <Avatar
                                                 src=''
                                                 alt={message.sender.first_name}
@@ -386,3 +399,5 @@ export default function Chat() {
 
     );
 }
+
+
