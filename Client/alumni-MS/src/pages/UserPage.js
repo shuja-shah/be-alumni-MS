@@ -87,7 +87,7 @@ export default function UserPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [myId, setMyId] = useState('');
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -206,11 +206,11 @@ export default function UserPage() {
                 />
                 <TableBody>
                   {Array.isArray(myRows) && myRows.length ? myRows.map((row) => {
-                    const { id, first_name, last_name, email, is_active } = row;
+                    const { _id, first_name, last_name, email, is_active } = row;
                     const selectedUser = selected.indexOf(first_name) !== -1;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
@@ -235,7 +235,11 @@ export default function UserPage() {
                         </TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                          <IconButton size="large" color="inherit" onClick={(e) => {
+                            setMyId(_id);
+                            handleOpenMenu(e)
+
+                          }}>
                             <Iconify icon={'eva:more-vertical-fill'} />
                           </IconButton>
                         </TableCell>
@@ -303,11 +307,45 @@ export default function UserPage() {
         }}
       >
         <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} onClick={async () => {
+            const res = await fetch(`${ENDPOINT}/api/users/${myId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                is_active: true,
+              }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+              console.log(data.error);
+              return;
+            }
+            myFetch();
+          }} />
           Activate
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem sx={{ color: 'error.main' }} onClick={async () => {
+          const res = await fetch(`${ENDPOINT}/api/users/delete/${myId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+
+          });
+
+          const data = await res.json();
+          if (!res.ok) {
+            console.log(data.error);
+            return;
+          }
+          myFetch();
+        }}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
