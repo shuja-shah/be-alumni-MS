@@ -429,31 +429,10 @@ export default function Channels() {
                     },
                 }}
             >
-                <MenuItem>
-                    <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} onClick={async () => {
-                        const res = await fetch(`${ENDPOINT}/api/users/${myId}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                is_active: true,
-                            }),
-                        });
 
-                        const data = await res.json();
-                        if (!res.ok) {
-                            console.log(data.error);
-                            return;
-                        }
-                        myFetch();
-                    }} />
-                    Activate
-                </MenuItem>
 
                 <MenuItem sx={{ color: 'error.main' }} onClick={async () => {
-                    const res = await fetch(`${ENDPOINT}/api/users/delete/${myId}`, {
+                    const res = await fetch(`${ENDPOINT}/api/chat/chats/${myId}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
