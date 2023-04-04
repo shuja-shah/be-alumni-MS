@@ -24,6 +24,10 @@ import {
     Grid,
     Box,
     TextField,
+    Autocomplete,
+    List,
+    ListItem,
+    Alert
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -88,12 +92,17 @@ export default function Channels() {
     const [orderBy, setOrderBy] = useState('name');
 
     const [filterName, setFilterName] = useState('');
+    const [tempState, setTempState] = useState([]);
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [myId, setMyId] = useState('');
     const handleOpenMenu = (event) => {
         setOpen(event.currentTarget);
     };
+
+    useEffect(() => {
+        console.log(tempState)
+    }, [tempState])
 
     const handleCloseMenu = () => {
         setOpen(null);
@@ -188,14 +197,31 @@ export default function Channels() {
     };
 
     const [data, setData] = useState({
-        position: '',
-        company: '',
-        location: '',
-        description: '',
+        participants: [],
+
     })
+    const [userOptions, setUserOptions] = useState([]);
+    const myFetch2 = async () => {
+        const res = await fetch(`${ENDPOINT}/api/users`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            console.log(data.error);
+            return;
+        }
+
+        setUserOptions([...data.alumnis, ...data.students])
+    }
 
     useEffect(() => {
         myFetch();
+        myFetch2();
     }, [])
 
 
@@ -222,49 +248,49 @@ export default function Channels() {
                                 onClose={toggleDrawer(anchor, false)}
                             >
                                 <Grid container direction="column" alignItems="flex-start" sx={{ padding: '0.44rem 2rem' }}>
-                                    <h1>Add A New Job</h1>
+                                    <h1>New Channel</h1>
                                 </Grid>
                                 <Stack spacing={3} sx={{ padding: '0.44rem 2rem', width: '95%' }}>
-                                    <TextField
-                                        name="Position"
-                                        label="Position"
-                                        value={data.position}
-                                        onChange={(e) => setData({ ...data, position: e.target.value })}
+                                    <h2>Add Members</h2>
+                                    {Array.isArray(userOptions) && userOptions.length ?
+                                        (
+                                            <List sx={{
+                                                height: '500px',
+                                                overflow: 'auto'
+                                            }}>
+                                                {userOptions.map((item) => (
+                                                    <ListItem key={item._id}>
+                                                        <Checkbox onChange={(e) => {
+                                                            if (e.target.checked) {
+                                                                setTempState([...tempState, item._id])
+                                                            } else {
 
-                                    />
+                                                                const index = tempState.indexOf(item._id);
+                                                                if (index > -1) {
+                                                                    tempState.splice(index, 1);
+                                                                }
+                                                                setTempState([...tempState])
 
-                                    <TextField
-                                        name="Location"
-                                        label="Company"
-                                        value={data.company}
-                                        onChange={(e) => setData({ ...data, company: e.target.value })}
-
-                                    />
-                                    <TextField
-                                        name="Location"
-                                        label="Location"
-                                        value={data.location}
-                                        onChange={(e) => setData({ ...data, location: e.target.value })}
-
-                                    />
-                                    <TextField
-                                        name="Description"
-                                        label="Description"
-                                        value={data.description}
-                                        onChange={(e) => setData({ ...data, description: e.target.value })}
-                                        multiline
-                                    />
+                                                            }
+                                                        }} />
+                                                        {item.first_name}
+                                                    </ListItem>
+                                                ))}
+                                            </List>
+                                        ) : 'No Users'}
                                     {isError && <Alert severity="error">{errorMessage}</Alert>}
-                                    {succ && <Alert severity="success">Job Added Successfully</Alert>}
+                                    {succ && <Alert severity="success">Chat Channel Successfully Created</Alert>}
                                     <Button variant="contained" onClick={async (e) => {
                                         e.preventDefault();
-                                        const res = await fetch(`${ENDPOINT}/api/jobs/new`, {
+                                        const res = await fetch(`${ENDPOINT}/api/chat/chats`, {
                                             method: 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json',
                                                 'Authorization': `Bearer ${token}`
                                             },
-                                            body: JSON.stringify(data)
+                                            body: JSON.stringify({
+                                                participants: tempState
+                                            })
                                         })
                                         const Rdata = await res.json();
                                         if (!res.ok) {
