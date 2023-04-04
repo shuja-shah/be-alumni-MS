@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Link, Container, Typography, Divider, Stack, Button , TextField,InputAdornment, Alert, IconButton} from '@mui/material';
+import { Link, Container, Typography, Divider, Stack, Button, TextField, InputAdornment, Alert, IconButton, MenuItem, InputLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import useResponsive from '../hooks/useResponsive';
@@ -13,6 +13,7 @@ import { LoginForm } from '../sections/auth/login';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { ENDPOINT } from './LoginPage';
+import Select from '@mui/material/Select';
 // ----------------------------------------------------------------------
 
 
@@ -33,6 +34,7 @@ function RegisterForm() {
         phone_num: '',
 
     })
+    const [newData, setNewData] = useState('student')
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -54,7 +56,17 @@ function RegisterForm() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(newData === 'admin' ? {
+                ...formData,
+                is_alumni: false,
+                is_student: false,
+                is_admin: true,
+            } : newData === 'alumni' ? {
+                ...formData,
+                is_alumni: true,
+                is_student: false,
+                is_admin: false,
+            } : formData)
         });
 
         const data = await req.json();
@@ -122,12 +134,16 @@ function RegisterForm() {
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 />
-                <TextField
-                    name="Number"
-                    label="Phone Number"
-                    value={formData.phone_num}
-                    onChange={(e) => setFormData({ ...formData, phone_num: e.target.value })}
-                />
+                <Select
+                    label="Register As"
+                    value={newData}
+                    onChange={(e) => setNewData(e.target.value)}
+                >
+                    <em>Register As</em>
+                    <MenuItem value='student'>Student</MenuItem>
+                    <MenuItem value='alumni'>Alumni</MenuItem>
+                    <MenuItem value='admin'>Admin</MenuItem>
+                </Select>
 
                 {isError && <Alert severity="error">{errorMessage}</Alert>}
                 {succ && <Alert severity="success">Registration Successful You May Login</Alert>}

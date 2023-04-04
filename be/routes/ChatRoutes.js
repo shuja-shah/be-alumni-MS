@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const Chat = require('../models/chat');
+const Chat = require('../models/conversation');
 const Message = require('../models/message');
-const { authCheck, adminCheck } = require("../middlewares/_auth");
+const { authCheck } = require("../middlewares/_auth");
 
 // Get all chats
 router.get('/chats', authCheck, async (req, res) => {
     try {
-        const chats = await Chat.find().populate('members', '-password');
+        const chats = await Chat.find();
         res.send(chats);
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -17,7 +17,7 @@ router.get('/chats', authCheck, async (req, res) => {
 // Get a specific chat by its id
 router.get('/chats/:id', authCheck, async (req, res) => {
     try {
-        const chat = await Chat.findById(req.params.id).populate('members', '-password');
+        const chat = await Chat.findById(req.params.id);
         res.send(chat);
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -40,10 +40,10 @@ router.post('/chats', authCheck, async (req, res) => {
 // Add a new message to a chat by its id
 router.post('/chats/:id/messages', authCheck, async (req, res) => {
     try {
-        const { message } = req.body;
+        const { text } = req.body;
         const chatId = req.params.id;
-        const sentBy = req.user._id;
-        const newMessage = new Message({ message, chatId, sentBy });
+        const sender = req.user._id;
+        const newMessage = new Message({ text, chatId, sender });
         const savedMessage = await newMessage.save();
         res.send(savedMessage);
     } catch (error) {
@@ -52,7 +52,7 @@ router.post('/chats/:id/messages', authCheck, async (req, res) => {
 });
 
 // Get all messages sent in all chats (admin only)
-router.get('/messages', authCheck, adminCheck, async (req, res) => {
+router.get('/messages', authCheck, async (req, res) => {
     try {
         const messages = await Message.find().populate('chatId');
         res.send(messages);
