@@ -17,7 +17,10 @@ router.get('/chats', authCheck, async (req, res) => {
 // Get a specific chat by its id
 router.get('/chats/:id', authCheck, async (req, res) => {
     try {
-        const chat = await Chat.findById(req.params.id).populate('messages');
+        const chat = await Chat.findById(req.params.id).populate({
+            path: 'messages',
+            populate: { path: 'sender' } // populate the sender field in each message
+        });
         res.send(chat);
     } catch (error) {
         res.status(500).send({ error: error.message });

@@ -164,7 +164,7 @@ export default function UserPage() {
       return;
     }
 
-    const myData = data.alumnis.concat(data.students);
+    const myData = [...data.students, ...data.alumnis];
     setMyRows(myData)
   }
 

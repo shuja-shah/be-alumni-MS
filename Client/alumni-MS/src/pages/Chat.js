@@ -30,6 +30,7 @@ import {
     Alert,
     CircularProgress,
     Divider,
+    ListItemText,
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -161,7 +162,7 @@ export default function Chat() {
     const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
     const isNotFound = !filteredUsers.length && !!filterName;
-
+    const [secondStage, setSecondStage] = useState(false);
     const [myRows, setMyRows] = useState([]);
     const token = localStorage.getItem('token');
     const [messages, setMessages] = useState([]);
@@ -186,7 +187,7 @@ export default function Chat() {
             return;
         }
         if (ourChat.length) {
-            const res2 = await fetch(`${ENDPOINT}/api/chat/chats/${ourChat.id}`,
+            const res2 = await fetch(`${ENDPOINT}/api/chat/chats/${ourChat[0]._id}`,
                 {
                     method: 'GET',
                     headers: {
@@ -204,7 +205,9 @@ export default function Chat() {
 
             setIsLoading(false);
         } else {
-            console.log('No chat found')
+            console.log('No chat found');
+            setSecondStage(true);
+            setIsLoading(false);
         }
 
     }
@@ -214,6 +217,9 @@ export default function Chat() {
         bottom: false,
         right: false,
     });
+
+
+
 
     const toggleDrawer = (anchor, open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -233,6 +239,16 @@ export default function Chat() {
     useEffect(() => {
         myFetch();
     }, [])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            myFetch();
+            console.warn('Sockets: getting Latest Messages')
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
 
 
     return !isLoading ? (
@@ -255,13 +271,17 @@ export default function Chat() {
                 }}>
                     {Array.isArray(messages) && messages.length ? (
                         <>
-                            <List>
+                            <List sx={{ height: '600px', overflowY: 'auto' }}>
                                 {messages.map((message, index) => {
                                     return (
-                                        <ListItem key={index}>
+                                        <ListItem key={index} sx={{ gap: '1rem' }} >
+                                            <Avatar
+                                                src=''
+                                                alt={message.sender.first_name}
+                                            />
                                             <ListItemText
-                                                primary={message.text}
-                                                secondary={message.timestamp}
+                                                primary={message.sender.first_name}
+                                                secondary={message.text}
                                             />
                                             <Divider />
                                         </ListItem>
@@ -272,7 +292,7 @@ export default function Chat() {
 
                             <TextField
                                 id="outlined-multiline-static"
-                                label="Multiline"
+                                label="Type a Message Here"
                                 multiline
                                 rows={4}
                                 sx={{
@@ -281,14 +301,73 @@ export default function Chat() {
 
                                 }}
                                 variant="outlined"
+                                onKeyPress={async (e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        const res = await fetch(`${ENDPOINT}/api/chat/chats/${currentChat._id}/messages`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': `Bearer ${token}`
+                                            },
+                                            body: JSON.stringify({
+                                                text: e.target.value,
+                                            })
+                                        });
+                                        const data = await res.json();
+                                        if (!res.ok) {
+                                            console.log('Error sending message', messages)
+                                            return;
+                                        }
+                                        setMessages([...messages, data]);
+                                        e.target.value = '';
+                                    }
+                                }}
                             />
 
                         </>
                     ) : (
-                        <Typography variant="h6" gutterBottom>
-                            No messages yet
-                        </Typography>
+                        <>
+                            <Typography variant="h6" gutterBottom>
+                                {secondStage ? 'You are not part of any Chat' : 'No Messages Yet'}
+                            </Typography>
+                            {!secondStage && (
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    label="Multiline"
+                                    multiline
+                                    rows={4}
+                                    sx={{
+                                        width: '100%',
+                                        mt: 2
 
+                                    }}
+                                    variant="outlined"
+                                    onKeyPress={async (e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            const res = await fetch(`${ENDPOINT}/api/chat/chats/${currentChat._id}/messages`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Authorization': `Bearer ${token}`
+                                                },
+                                                body: JSON.stringify({
+                                                    text: e.target.value,
+                                                })
+                                            });
+                                            const data = await res.json();
+                                            if (!res.ok) {
+                                                console.log('Error sending message', messages)
+                                                return;
+                                            }
+                                            setMessages([...messages, data]);
+                                            e.target.value = '';
+                                        }
+                                    }}
+                                />
+                            )}
+                        </>
                     )}
 
                 </Card>
