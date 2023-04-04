@@ -35,6 +35,10 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
 import Drawer from '@mui/material/Drawer';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -146,6 +150,7 @@ export default function JobPage() {
     setPage(0);
     setFilterName(event.target.value);
   };
+  const [currentTarget, setCurrentTarget] = useState({});
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 
@@ -202,6 +207,8 @@ export default function JobPage() {
   })
   const [succ, setSucc] = useState(false);
   const [myId, setMyId] = useState('');
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [openDia, setOpenDia] = useState(false);
   return (
     <>
       <Helmet>
@@ -213,7 +220,8 @@ export default function JobPage() {
           <Typography variant="h4" gutterBottom>
             Jobs
           </Typography>
-          {['bottom'].map((anchor) => (
+
+          {user && !user.is_student && ['bottom'].map((anchor) => (
             <React.Fragment key={anchor}>
               <Button variant="contained" onClick={toggleDrawer(anchor, true)} >
                 New
@@ -338,6 +346,11 @@ export default function JobPage() {
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={(e) => {
+                            if (user && user.is_student) {
+                              setCurrentTarget(row);
+                              setOpenDia(true);
+                              return;
+                            }
                             setMyId(_id);
                             handleOpenMenu(e)
                           }}>
@@ -428,6 +441,53 @@ export default function JobPage() {
           Delete
         </MenuItem>
       </Popover>
+      <Dialog
+        open={openDia}
+        onClose={() => setOpenDia(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Job Details"}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ padding: '0.44rem 2rem', width: '95%' }}>
+            <TextField
+              name="Position"
+              label="Position"
+              value={currentTarget.position ? currentTarget.position : ''}
+              disabled
+
+            />
+
+            <TextField
+              name="Location"
+              label="Company"
+              value={currentTarget.company ? currentTarget.company : ''}
+              disabled
+            />
+            <TextField
+              name="Location"
+              label="Location"
+              value={currentTarget.location ? currentTarget.location : ''}
+              disabled
+
+            />
+            <TextField
+              name="Description"
+              label="Description"
+              value={currentTarget.description ? currentTarget.description : ''}
+              multiline
+              disabled
+            />
+
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDia(false)} color="primary" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </>
   );
 }

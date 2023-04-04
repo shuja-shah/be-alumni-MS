@@ -66,7 +66,12 @@ function RegisterForm() {
                 is_alumni: true,
                 is_student: false,
                 is_admin: false,
-            } : formData)
+            } : {
+                ...formData,
+                is_alumni: false,
+                is_student: true,
+                is_admin: false,
+            })
         });
 
         const data = await req.json();

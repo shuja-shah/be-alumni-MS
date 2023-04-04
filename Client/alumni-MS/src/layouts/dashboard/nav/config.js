@@ -32,6 +32,7 @@ const navConfig = user && user.is_admin ? [
   path: '/jobs',
   icon: icon('ic_cart'),
 },
+
 {
 
   title: 'Chat',
@@ -42,6 +43,11 @@ const navConfig = user && user.is_admin ? [
   title: 'Profile',
   path: '/profile',
   icon: icon('ic_user'),
+},
+{
+  title: 'Jobs',
+  path: '/jobs',
+  icon: icon('ic_cart'),
 },
 {
 
