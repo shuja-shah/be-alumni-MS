@@ -21,16 +21,35 @@ const navConfig = user && user.is_admin ? [
     path: '/jobs',
     icon: icon('ic_cart'),
   },
-] : user && (user.is_admin || user.is_alumni) ? [{
+  {
+    title: 'Chat Channels',
+    path: '/channel',
+    icon: icon('ic_chat')
+  },
+] : user && user.is_alumni ? [{
 
   title: 'Jobs',
   path: '/jobs',
   icon: icon('ic_cart'),
 },
+{
+
+  title: 'Chat',
+  path: '/chat',
+  icon: icon('ic_chat'),
+},
 ] : [{
   title: 'Profile',
   path: '/profile',
   icon: icon('ic_user'),
-}];
+},
+{
+
+  title: 'Chat',
+  path: '/chat',
+  icon: icon('ic_chat'),
+},
+
+];
 
 export default navConfig;

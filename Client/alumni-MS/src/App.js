@@ -18,6 +18,7 @@ import RegisterPage from './pages/RegisterPage';
 import SimpleLayout from './layouts/simple/SimpleLayout';
 import DashboardLayout from './layouts/dashboard/DashboardLayout';
 import MyProfile from './pages/ProfilePage';
+import Channels from './pages/Channels';
 // ----------------------------------------------------------------------
 function RequireAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -71,6 +72,7 @@ export default function App() {
                   <Route exact path="/users" element={<UserPage />} />
                   <Route exact path="/jobs" element={<JobPage />} />
                   <Route exact path="/profile" element={<MyProfile />} />
+                  <Route exact path="/channel" element={<Channels />} />
                 </Route>
               </Route>
             </Route>
