@@ -26,6 +26,10 @@ const jobSchema = new Schema({
   created_at: {
     type: Date,
     default: Date.now
+  },
+  is_approved: {
+    type: Boolean,
+    default: false
   }
 });
 
