@@ -8,6 +8,10 @@ const NotificationSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  for_admin:{
+    type: Boolean,
+    default: false
   }
 });
 
