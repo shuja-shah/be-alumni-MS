@@ -26,6 +26,12 @@ const navConfig = user && user.is_admin ? [
     path: '/channel',
     icon: icon('ic_chat')
   },
+  {
+
+    title: 'Chat',
+    path: '/chat',
+    icon: icon('ic_chat'),
+  },
 ] : user && user.is_alumni ? [{
 
   title: 'Jobs',

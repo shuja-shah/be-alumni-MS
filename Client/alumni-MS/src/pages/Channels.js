@@ -188,6 +188,8 @@ export default function Channels() {
         right: false,
     });
 
+    const user = JSON.parse(localStorage.getItem('user'));
+
     const toggleDrawer = (anchor, open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -216,13 +218,16 @@ export default function Channels() {
             return;
         }
 
-        setUserOptions([...data.alumnis, ...data.students])
+        user.is_admin ? setUserOptions([...data.alumnis, ...data.students, {
+            ...user
+        }]) : setUserOptions([...data.alumnis, ...data.students])
     }
 
     useEffect(() => {
         myFetch();
         myFetch2();
     }, [])
+
 
 
     return (
@@ -258,6 +263,7 @@ export default function Channels() {
                                                 height: '500px',
                                                 overflow: 'auto'
                                             }}>
+
                                                 {userOptions.map((item) => (
                                                     <ListItem key={item._id}>
                                                         <Checkbox onChange={(e) => {

@@ -95,21 +95,26 @@ router.delete('/delete/:id', authCheck, async (req, res) => {
     }
 });
 
-router.patch("/upload", authCheck, upload.single("avatar"), async (req, res) => {
+router.patch("/upload", authCheck, async (req, res) => {
     try {
-        const user = await User.findById(req.user._id);
-        if (!user) {
+      upload(req, res, async function(err) {
+        if (err) {
+          res.status(400).send({ error: err.message });
+        } else {
+          const user = await User.findById(req.user._id);
+          if (!user) {
             return res.status(404).send({ error: "User not found" });
+          }
+      
+          user.avatar = req.file.filename;
+          await user.save();
+      
+          res.send(user);
         }
-
-        user.avatar = req.file.filename;
-        await user.save();
-
-        res.send(user);
+      });
     } catch (error) {
-        res.status(500).send({ error: error.message });
+      res.status(500).send({ error: error.message });
     }
-});
-
+  });
 
 module.exports = router;
