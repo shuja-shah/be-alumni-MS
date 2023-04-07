@@ -41,6 +41,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    avatar: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'File',
+        required: false,
+    },
+    resume: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'File',
+        required: false,
+    },
     is_admin: {
         type: Boolean,
         default: false,
