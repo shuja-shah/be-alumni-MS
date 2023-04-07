@@ -26,6 +26,11 @@ import {
   Alert
 } from '@mui/material';
 // components
+import Drawer from '@mui/material/Drawer';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
@@ -34,11 +39,6 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
-import Drawer from '@mui/material/Drawer';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -341,7 +341,7 @@ export default function JobPage() {
                         <TableCell align="left">{description}</TableCell>
 
                         <TableCell align="left">
-                          <Label color={'success'}>{sentenceCase(`${new Date(created_at).getDate() + '-' + new Date(created_at).getMonth() + '-' + new Date(created_at).getFullYear()}`)}</Label>
+                          <Label color={'success'}>{sentenceCase(`${`${new Date(created_at).getDate()  }-${  new Date(created_at).getMonth()  }-${  new Date(created_at).getFullYear()}`}`)}</Label>
                         </TableCell>
 
                         <TableCell align="right">

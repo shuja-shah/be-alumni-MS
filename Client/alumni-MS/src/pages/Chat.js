@@ -33,6 +33,7 @@ import {
     ListItemText,
 } from '@mui/material';
 // components
+import Drawer from '@mui/material/Drawer';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
@@ -41,7 +42,6 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
-import Drawer from '@mui/material/Drawer';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -180,9 +180,7 @@ export default function Chat() {
         });
 
         const data = await res.json();
-        const ourChat = data.filter((item) => {
-            return item.participants.includes(user._id)
-        });
+        const ourChat = data.filter((item) => item.participants.includes(user._id));
         if (!res.ok) {
             return;
         }
@@ -272,8 +270,7 @@ export default function Chat() {
                     {Array.isArray(messages) && messages.length ? (
                         <>
                             <List sx={{ height: '600px', overflowY: 'auto' }}>
-                                {messages.map((message, index) => {
-                                    return (
+                                {messages.map((message, index) => (
                                         <ListItem key={index} sx={user._id === message.sender._id ? {
                                             flexDirection: 'row-reverse',
                                             width: 'fit-content',
@@ -299,8 +296,7 @@ export default function Chat() {
                                             <Divider />
                                         </ListItem>
 
-                                    )
-                                })}
+                                    ))}
                             </List>
 
                             <TextField

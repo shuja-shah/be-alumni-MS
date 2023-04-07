@@ -1,6 +1,8 @@
 import { BrowserRouter, Navigate, Outlet, useLocation, Route, Routes } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 // routes
+import { useState } from 'react';
+import { useEffect } from 'react';
 import Router from './routes';
 // theme
 import ThemeProvider from './theme';
@@ -11,8 +13,6 @@ import LoginPage, { ENDPOINT } from './pages/LoginPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import UserPage from './pages/UserPage';
 import JobPage from './pages/ProductsPage';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import Page404 from './pages/Page404';
 import RegisterPage from './pages/RegisterPage';
 import SimpleLayout from './layouts/simple/SimpleLayout';

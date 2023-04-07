@@ -30,6 +30,7 @@ import {
     Alert
 } from '@mui/material';
 // components
+import Drawer from '@mui/material/Drawer';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
@@ -38,7 +39,6 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
-import Drawer from '@mui/material/Drawer';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [

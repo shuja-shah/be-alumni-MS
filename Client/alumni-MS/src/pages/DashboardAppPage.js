@@ -4,6 +4,8 @@ import { faker } from '@faker-js/faker';
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
 // components
+import { useState } from 'react';
+import { useEffect } from 'react';
 import Iconify from '../components/iconify';
 // sections
 import {
@@ -17,8 +19,6 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
-import { useState } from 'react';
-import { useEffect } from 'react';
 import { ENDPOINT } from './LoginPage';
 
 // ----------------------------------------------------------------------

@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
+import { ENDPOINT } from 'src/pages/LoginPage';
 import Iconify from '../../../components/iconify';
 // ----------------------------------------------------------------------
 // import { ENDPOINT } from '../../pages/LoginPage';
-import { ENDPOINT } from 'src/pages/LoginPage';
 
 
 export default function LoginForm() {

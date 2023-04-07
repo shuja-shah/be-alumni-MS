@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
-import account from '../../../_mock/account';
 import { useNavigate } from 'react-router-dom';
+import account from '../../../_mock/account';
 
 // ----------------------------------------------------------------------
 

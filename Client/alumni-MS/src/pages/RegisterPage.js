@@ -4,16 +4,16 @@ import { styled } from '@mui/material/styles';
 import { Link, Container, Typography, Divider, Stack, Button, TextField, InputAdornment, Alert, IconButton, MenuItem, InputLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Select from '@mui/material/Select';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Logo from '../components/logo';
 import Iconify from '../components/iconify';
 // sections
 import { LoginForm } from '../sections/auth/login';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import { ENDPOINT } from './LoginPage';
-import Select from '@mui/material/Select';
 // ----------------------------------------------------------------------
 
 
@@ -45,7 +45,7 @@ function RegisterForm() {
             setIsError(true);
             setErrorMessage('Password and Email are Required');
             return;
-        } else if (formData.first_name === '') {
+        } if (formData.first_name === '') {
             setIsError(true);
             setErrorMessage('Name is Required');
             return;

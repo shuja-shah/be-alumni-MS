@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
 import { faker } from '@faker-js/faker';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // @mui
 import {
   Box,
@@ -25,66 +25,98 @@ import { fToNow } from '../../../utils/formatTime';
 // components
 import Iconify from '../../../components/iconify';
 import Scrollbar from '../../../components/scrollbar';
+import { ENDPOINT } from 'src/pages/LoginPage';
 
 // ----------------------------------------------------------------------
 
-
-
-
-
-
-  // {
-  //   id: faker.datatype.uuid(),
-  //   title: 'Your order is placed',
-  //   description: 'waiting for shipping',
-  //   avatar: null,
-  //   type: 'order_placed',
-  //   createdAt: set(new Date(), { hours: 10, minutes: 30 }),
-  //   isUnRead: true,
-  // },
-  // {
-  //   id: faker.datatype.uuid(),
-  //   title: faker.name.fullName(),
-  //   description: 'answered to your comment on the Minimal',
-  //   avatar: '/assets/images/avatars/avatar_2.jpg',
-  //   type: 'friend_interactive',
-  //   createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
-  //   isUnRead: true,
-  // },
-  // {
-  //   id: faker.datatype.uuid(),
-  //   title: 'You have new message',
-  //   description: '5 unread messages',
-  //   avatar: null,
-  //   type: 'chat_message',
-  //   createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
-  //   isUnRead: false,
-  // },
-  // {
-  //   id: faker.datatype.uuid(),
-  //   title: 'You have new mail',
-  //   description: 'sent from Guido Padberg',
-  //   avatar: null,
-  //   type: 'mail',
-  //   createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
-  //   isUnRead: false,
-  // },
-  // {
-  //   id: faker.datatype.uuid(),
-  //   title: 'Delivery processing',
-  //   description: 'Your order is being shipped',
-  //   avatar: null,
-  //   type: 'order_shipped',
-  //   createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
-  //   isUnRead: false,
-  // },
+// {
+//   id: faker.datatype.uuid(),
+//   title: 'Your order is placed',
+//   description: 'waiting for shipping',
+//   avatar: null,
+//   type: 'order_placed',
+//   createdAt: set(new Date(), { hours: 10, minutes: 30 }),
+//   isUnRead: true,
+// },
+// {
+//   id: faker.datatype.uuid(),
+//   title: faker.name.fullName(),
+//   description: 'answered to your comment on the Minimal',
+//   avatar: '/assets/images/avatars/avatar_2.jpg',
+//   type: 'friend_interactive',
+//   createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
+//   isUnRead: true,
+// },
+// {
+//   id: faker.datatype.uuid(),
+//   title: 'You have new message',
+//   description: '5 unread messages',
+//   avatar: null,
+//   type: 'chat_message',
+//   createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
+//   isUnRead: false,
+// },
+// {
+//   id: faker.datatype.uuid(),
+//   title: 'You have new mail',
+//   description: 'sent from Guido Padberg',
+//   avatar: null,
+//   type: 'mail',
+//   createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
+//   isUnRead: false,
+// },
+// {
+//   id: faker.datatype.uuid(),
+//   title: 'Delivery processing',
+//   description: 'Your order is being shipped',
+//   avatar: null,
+//   type: 'order_shipped',
+//   createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
+//   isUnRead: false,
+// },
 // ];
 
 export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState([]);
   const user = JSON.parse(localStorage.getItem('user'));
-  
+  const token = localStorage.getItem('token');
   const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+
+  const myFetch = async () => {
+    const res2 = await fetch(`${ENDPOINT}/api/notification/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data2 = await res2.json();
+    if (!res2.ok) {
+      console.log(data2)
+      return;
+    }
+    const adminNotifications = data2.filter((item) => item.for_admin === true);
+    if (adminNotifications.length) {
+      setNotifications(adminNotifications.map((t) => ({ id: t._id, title: 'Required Approval', createdAt: new Date(t.createdAt), isUnRead: true, description: t.message, avatar: null, type: 'Admin' })));
+      return;
+    } else {
+      console.log('No Admin Notifications found');
+      setNotifications(data2.map((t) => ({ id: t._id, title: 'Apply Now', createdAt: new Date(t.createdAt), isUnRead: true, description: t.message, avatar: null, type: 'User' })));
+    }
+  };
+
+  useEffect(() => {
+    myFetch();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      myFetch();
+      console.warn('Sockets: getting Latest Notifications')
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const [open, setOpen] = useState(null);
 
