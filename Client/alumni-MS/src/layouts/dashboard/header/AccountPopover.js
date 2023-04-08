@@ -5,16 +5,15 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover 
 // mocks_
 import { useNavigate } from 'react-router-dom';
 import account from '../../../_mock/account';
+import { ENDPOINT } from 'src/pages/LoginPage';
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
-
   {
     label: 'Profile',
     icon: 'eva:person-fill',
   },
-
 ];
 
 // ----------------------------------------------------------------------
@@ -51,7 +50,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={user && ` ${ENDPOINT}/media/${user.avatar}`} alt="photoURL" />
       </IconButton>
 
       <Popover
@@ -78,7 +77,7 @@ export default function AccountPopover() {
             {user && 'first_name' in user ? user.first_name : ''}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user && 'email' in user ? user.email : ""}
+            {user && 'email' in user ? user.email : ''}
           </Typography>
         </Box>
 
@@ -86,10 +85,13 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={() => {
-              navigate('/profile');
-              handleClose();
-            }}>
+            <MenuItem
+              key={option.label}
+              onClick={() => {
+                navigate('/profile');
+                handleClose();
+              }}
+            >
               {option.label}
             </MenuItem>
           ))}
@@ -97,11 +99,14 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={() => {
-          localStorage.removeItem('user');
-          localStorage.removeItem('token');
-          navigate('/login');
-        }} sx={{ m: 1 }}>
+        <MenuItem
+          onClick={() => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            navigate('/login');
+          }}
+          sx={{ m: 1 }}
+        >
           Logout
         </MenuItem>
       </Popover>

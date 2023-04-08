@@ -113,6 +113,7 @@ const ChangeDp = ({ myFetch }) => {
               height: '170px',
               display: 'flex',
               flexDirection: 'column',
+              justifyContent: 'center',
               alignItems: 'center',
               background: '#f5f5f5',
               borderRadius: '8px',
@@ -153,7 +154,7 @@ const ChangeDp = ({ myFetch }) => {
               width: '80px',
               height: '80px',
             }}
-            src={currentUser.avatar ? currentUser.avatar : ''}
+            src={currentUser.avatar ? `${ENDPOINT}/media/${currentUser.avatar}` : ''}
           >
             {!dataLoading ? currentUser.first_name[0] : 'E'}
           </Avatar>
