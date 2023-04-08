@@ -47,15 +47,16 @@ router.get("/", authCheck, async (req, res) => {
 
 router.get('/self', authCheck, async (req, res) => {
     try {
-        const user = await User.findById(req.user._id).select('-password -__v');
-        if (!user) {
-            return res.status(404).send({ error: 'User not found' });
-        }
-        res.send(user);
+      const user = await User.findById(req.user._id).select('-password -__v');
+      if (!user) {
+        return res.status(404).send({ error: 'User not found' });
+      }
+      res.send(user);
     } catch (error) {
-        res.status(500).send({ error: error.message });
+      res.status(500).send({ error: error.message });
     }
-});
+  });
+  
 
 
 router.put('/:userId', authCheck, async (req, res) => {

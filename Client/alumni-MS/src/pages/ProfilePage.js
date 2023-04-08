@@ -79,7 +79,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const ChangeDp = () => {
+const ChangeDp = ({ myFetch }) => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
   const [avatarUpload, setAvatarUpload] = useState(false);
@@ -88,14 +88,20 @@ const ChangeDp = () => {
     const file = e.target.files[0];
     const formData = new FormData();
     formData.append('avatar', file);
-    const res = await fetch(`${ENDPOINT}/api/v1/users/${currentUser.id}/avatar`, {
-      method: 'POST',
+    const res = await fetch(`${ENDPOINT}/api/users/upload`, {
+      method: 'PATCH',
       headers: {
         Authorization: 'Bearer ' + token,
       },
       body: formData,
     });
     const data = await res.json();
+    if (!res.ok) {
+      console.log(data);
+      return false;
+    }
+    console.log(data, 'dp CHanged');
+    myFetch();
   };
 
   return (
@@ -104,10 +110,10 @@ const ChangeDp = () => {
         !avatarUpload
           ? {
               width: '300px',
-              height: '270px',
+              height: '170px',
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'flex-start',
+              alignItems: 'center',
               background: '#f5f5f5',
               borderRadius: '8px',
               border: 'none',
@@ -118,7 +124,7 @@ const ChangeDp = () => {
           : {
               /* go a little dark and show icons */
               width: '300px',
-              height: '270px',
+              height: '170px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-start',
@@ -134,7 +140,6 @@ const ChangeDp = () => {
       onMouseOver={() => setAvatarUpload(true)}
       onMouseLeave={() => setAvatarUpload(false)}
     >
-      <h3 className="fstxtPro">Profile</h3>
       <div
         style={{
           display: 'flex',
@@ -148,21 +153,11 @@ const ChangeDp = () => {
               width: '80px',
               height: '80px',
             }}
-            src={currentUser.avatar ? `${ENDPOINT}/${currentUser.avatar}` : ''}
+            src={currentUser.avatar ? currentUser.avatar : ''}
           >
             {!dataLoading ? currentUser.first_name[0] : 'E'}
           </Avatar>
         )}
-        <h4
-          style={{
-            fontSize: '1.5rem',
-            fontWeight: '500',
-            color: '#000',
-            fontFamily: 'Open Sans',
-          }}
-        >
-          {!dataLoading ? currentUser.first_name : 'N'} {!dataLoading ? currentUser.last_name : 'aN'}
-        </h4>
       </div>
       {avatarUpload && (
         <label>
@@ -302,7 +297,7 @@ export default function MyProfile() {
           <Scrollbar>
             <Grid container direction="column" alignItems="center">
               <Grid item>
-                <ChangeDp />
+                <ChangeDp myFetch={myFetch} />
               </Grid>
               <Grid item>
                 <Stack spacing={0} sx={{ padding: '0.44rem 2rem', width: '95%', gap: '1rem' }}>

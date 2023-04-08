@@ -32,7 +32,7 @@ router.post('/new', authCheck, async (req, res) => {
         const savedJob = await newJob.save();
 
         const notification = new Notification({
-            message: `New job posted by ${req.user.first_name}`,
+            message: `New job posted by an Alumni: ${savedJob.position} at ${savedJob.company}`,
             created_at: new Date(),
             for_admin: true,
         });

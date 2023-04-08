@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
         required: false,
     },
     avatar: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'File',
         required: false,
     },

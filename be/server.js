@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 const { mongodb } = require("./config/db");
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const detRoutes = require('./routes/users');
@@ -13,7 +14,7 @@ const notification = require('./routes/NotificationRoutes');
 
 app.use(cors());
 
-
+app.use('/media', express.static(path.join(__dirname, 'media')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
