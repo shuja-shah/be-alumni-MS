@@ -206,6 +206,7 @@ export default function JobPage() {
   });
 
   const toggleSDrawer = (anchor, open) => (event) => {
+    handleCloseMenu();
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
@@ -232,7 +233,7 @@ export default function JobPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Unapproved Jobs
+            Jobs
           </Typography>
 
           {user &&
@@ -471,7 +472,7 @@ export default function JobPage() {
           <>
             {['bottom'].map((anchor) => (
               <React.Fragment key={anchor}>
-                <MenuItem>
+                <MenuItem onClick={toggleSDrawer(anchor, true)}>
                   <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
                   Edit Job
                 </MenuItem>
@@ -529,7 +530,7 @@ export default function JobPage() {
                           return;
                         }
                         setSucc(true);
-                        toggleDrawer(anchor, false);
+                        toggleSDrawer(anchor, false);
                         myFetch();
                       }}
                     >

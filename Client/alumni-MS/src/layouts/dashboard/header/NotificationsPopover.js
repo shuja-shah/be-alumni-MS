@@ -92,16 +92,40 @@ export default function NotificationsPopover() {
     });
     const data2 = await res2.json();
     if (!res2.ok) {
-      console.log(data2)
+      console.log(data2);
       return;
     }
     const adminNotifications = data2.filter((item) => item.for_admin === true);
-    if (adminNotifications.length) {
-      setNotifications(adminNotifications.map((t) => ({ id: t._id, title: 'Required Approval', createdAt: new Date(t.createdAt), isUnRead: true, description: t.message, avatar: null, type: 'Admin' })));
-      return;
-    } else {
-      console.log('No Admin Notifications found');
-      setNotifications(data2.map((t) => ({ id: t._id, title: 'Apply Now', createdAt: new Date(t.createdAt), isUnRead: true, description: t.message, avatar: null, type: 'User' })));
+    if (user) {
+      if (adminNotifications.length && user.is_admin) {
+        setNotifications(
+          adminNotifications.map((t) => ({
+            id: t._id,
+            title: 'Required Approval',
+            createdAt: new Date(t.createdAt),
+            isUnRead: true,
+            description: t.message,
+            avatar: null,
+            type: 'Admin',
+          }))
+        );
+        return;
+      } else {
+        console.log('No Admin Notifications found');
+        setNotifications(
+          data2
+            .filter((c) => c.for_admin === false)
+            .map((t) => ({
+              id: t._id,
+              title: 'Apply Now',
+              createdAt: new Date(t.createdAt),
+              isUnRead: true,
+              description: t.message,
+              avatar: null,
+              type: 'User',
+            }))
+        );
+      }
     }
   };
 
@@ -112,7 +136,7 @@ export default function NotificationsPopover() {
   useEffect(() => {
     const interval = setInterval(() => {
       myFetch();
-      console.warn('Sockets: getting Latest Notifications')
+      console.warn('Sockets: getting Latest Notifications');
     }, 4000);
 
     return () => clearInterval(interval);
