@@ -20,6 +20,7 @@ import DashboardLayout from './layouts/dashboard/DashboardLayout';
 import MyProfile from './pages/ProfilePage';
 import Channels from './pages/Channels';
 import Chat from './pages/Chat';
+import LandingPage from './LandingPage';
 // ----------------------------------------------------------------------
 function RequireAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,34 +40,33 @@ const userFetch = async () => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${myToken}`
-    }
+      Authorization: `Bearer ${myToken}`,
+    },
   });
   const data = await req.json();
 
   if (!req.ok) {
-    console.log('No Fetch User', data)
+    console.log('No Fetch User', data);
     return false;
   }
   localStorage.setItem('user', JSON.stringify(data));
   return data;
-}
+};
 export default function App() {
   useEffect(() => {
     userFetch();
   }, []);
   return (
-
     <HelmetProvider>
-
       <BrowserRouter>
         <ThemeProvider>
           <ScrollToTop />
           <StyledChart />
           <Routes>
+            <Route exact path="/home" element={<LandingPage />} />
             <Route exact path="/login" element={<LoginPage />} />
             <Route exact path="/register" element={<RegisterPage />} />
-            
+
             <Route element={<RequireAuth />}>
               <Route element={<SimpleLayout />}>
                 <Route element={<DashboardLayout />}>
