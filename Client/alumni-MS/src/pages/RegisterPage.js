@@ -147,7 +147,6 @@ function RegisterForm() {
                     <em>Register As</em>
                     <MenuItem value='student'>Student</MenuItem>
                     <MenuItem value='alumni'>Alumni</MenuItem>
-                    <MenuItem value='admin'>Admin</MenuItem>
                 </Select>
 
                 {isError && <Alert severity="error">{errorMessage}</Alert>}
