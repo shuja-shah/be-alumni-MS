@@ -39,7 +39,7 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
-// ----------------------------------------------------------------------
+import Offcanvas from 'react-bootstrap/Offcanvas'; // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Position', alignRight: false },
@@ -205,6 +205,8 @@ export default function JobPage() {
     right: false,
   });
 
+  const [openOff, setOpenOff] = useState(false);
+
   const toggleSDrawer = (anchor, open) => (event) => {
     handleCloseMenu();
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -224,7 +226,7 @@ export default function JobPage() {
   const [myId, setMyId] = useState('');
   const user = JSON.parse(localStorage.getItem('user'));
   const [openDia, setOpenDia] = useState(false);
-  return (
+  return !openOff ? (
     <>
       <Helmet>
         <title> Jobs | Alumni Management System </title>
@@ -298,6 +300,7 @@ export default function JobPage() {
                         }
                         setSucc(true);
                         toggleDrawer(anchor, false);
+
                         myFetch();
                       }}
                     >
@@ -327,60 +330,60 @@ export default function JobPage() {
                 <TableBody>
                   {Array.isArray(myRows) && myRows.length
                     ? myRows.map((row) => {
-                      const { _id, position, company, location, description, created_at } = row;
-                      const selectedUser = selected.indexOf(position) !== -1;
+                        const { _id, position, company, location, description, created_at } = row;
+                        const selectedUser = selected.indexOf(position) !== -1;
 
-                      return (
-                        <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                          <TableCell padding="checkbox">
-                            <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
-                          </TableCell>
+                        return (
+                          <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                            <TableCell padding="checkbox">
+                              <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
+                            </TableCell>
 
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Typography variant="subtitle2" noWrap>
-                                {position}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
+                            <TableCell component="th" scope="row" padding="none">
+                              <Stack direction="row" alignItems="center" spacing={2}>
+                                <Typography variant="subtitle2" noWrap>
+                                  {position}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
 
-                          <TableCell align="left">{company}</TableCell>
+                            <TableCell align="left">{company}</TableCell>
 
-                          <TableCell align="left">{location}</TableCell>
+                            <TableCell align="left">{location}</TableCell>
 
-                          <TableCell align="left">{description}</TableCell>
+                            <TableCell align="left">{description}</TableCell>
 
-                          <TableCell align="left">
-                            <Label color={'success'}>
-                              {sentenceCase(
-                                `${`${new Date(created_at).getDate()}-${new Date(created_at).getMonth()}-${new Date(
-                                  created_at
-                                ).getFullYear()}`}`
-                              )}
-                            </Label>
-                          </TableCell>
+                            <TableCell align="left">
+                              <Label color={'success'}>
+                                {sentenceCase(
+                                  `${`${new Date(created_at).getDate()}-${new Date(created_at).getMonth()}-${new Date(
+                                    created_at
+                                  ).getFullYear()}`}`
+                                )}
+                              </Label>
+                            </TableCell>
 
-                          <TableCell align="right">
-                            <IconButton
-                              size="large"
-                              color="inherit"
-                              onClick={(e) => {
-                                if (user && user.is_student) {
+                            <TableCell align="right">
+                              <IconButton
+                                size="large"
+                                color="inherit"
+                                onClick={(e) => {
+                                  if (user && user.is_student) {
+                                    setCurrentTarget(row);
+                                    setOpenDia(true);
+                                    return;
+                                  }
                                   setCurrentTarget(row);
-                                  setOpenDia(true);
-                                  return;
-                                }
-                                setCurrentTarget(row);
-                                setMyId(_id);
-                                handleOpenMenu(e);
-                              }}
-                            >
-                              <Iconify icon={'eva:more-vertical-fill'} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
+                                  setMyId(_id);
+                                  handleOpenMenu(e);
+                                }}
+                              >
+                                <Iconify icon={'eva:more-vertical-fill'} />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
                     : null}
                 </TableBody>
 
@@ -470,76 +473,15 @@ export default function JobPage() {
 
         {user && user.is_alumni && (
           <>
-            {['bottom'].map((anchor) => (
-              <React.Fragment key={anchor}>
-                <MenuItem onClick={toggleSDrawer(anchor, true)}>
-                  <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-                  Edit Job
-                </MenuItem>
-
-                <Drawer anchor={anchor} open={sstate[anchor]} onClose={toggleSDrawer(anchor, false)}>
-                  <Grid container direction="column" alignItems="flex-start" sx={{ padding: '0.44rem 2rem' }}>
-                    <h1>Edit Job</h1>
-                  </Grid>
-                  <Stack spacing={3} sx={{ padding: '0.44rem 2rem', width: '95%' }}>
-                    <TextField
-                      name="Position"
-                      label="Position"
-                      value={currentTarget.position}
-                      onChange={(e) => setCurrentTarget({ ...currentTarget, position: e.target.value })}
-                    />
-
-                    <TextField
-                      name="Location"
-                      label="Company"
-                      value={currentTarget.company}
-                      onChange={(e) => setCurrentTarget({ ...currentTarget, company: e.target.value })}
-                    />
-                    <TextField
-                      name="Location"
-                      label="Location"
-                      value={currentTarget.location}
-                      onChange={(e) => setCurrentTarget({ ...currentTarget, location: e.target.value })}
-                    />
-                    <TextField
-                      name="Description"
-                      label="Description"
-                      value={currentTarget.description}
-                      onChange={(e) => setCurrentTarget({ ...currentTarget, description: e.target.value })}
-                      multiline
-                    />
-                    {isError && <Alert severity="error">{errorMessage}</Alert>}
-                    {succ && <Alert severity="success">Job Updated Successfully</Alert>}
-                    <Button
-                      variant="contained"
-                      onClick={async (e) => {
-                        e.preventDefault();
-                        const res = await fetch(`${ENDPOINT}/api/jobs/update/${myId}`, {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${token}`,
-                          },
-                          body: JSON.stringify(currentTarget),
-                        });
-                        const Rdata = await res.json();
-                        if (!res.ok) {
-                          setIsError(true);
-                          setErrorMessage(Rdata.error);
-                          console.log(Rdata);
-                          return;
-                        }
-                        setSucc(true);
-                        toggleSDrawer(anchor, false);
-                        myFetch();
-                      }}
-                    >
-                      Save
-                    </Button>
-                  </Stack>
-                </Drawer>
-              </React.Fragment>
-            ))}
+            <MenuItem
+              onClick={() => {
+                console.warn('Edit Clicked');
+                setOpenOff(true);
+              }}
+            >
+              <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+              Edit Job
+            </MenuItem>
 
             <MenuItem
               sx={{ color: 'error.main' }}
@@ -609,5 +551,75 @@ export default function JobPage() {
         </DialogActions>
       </Dialog>
     </>
+  ) : (
+    <Container>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Typography variant="h4" gutterBottom>
+          Edit Job
+        </Typography>
+      </Stack>
+      <Card>
+        <Stack spacing={3} sx={{ padding: '0.44rem 2rem', width: '95%' }}>
+          <TextField
+            name="Position"
+            label="Position"
+            value={currentTarget.position}
+            onChange={(e) => setCurrentTarget({ ...currentTarget, position: e.target.value })}
+          />
+
+          <TextField
+            name="Location"
+            label="Company"
+            value={currentTarget.company}
+            onChange={(e) => setCurrentTarget({ ...currentTarget, company: e.target.value })}
+          />
+          <TextField
+            name="Location"
+            label="Location"
+            value={currentTarget.location}
+            onChange={(e) => setCurrentTarget({ ...currentTarget, location: e.target.value })}
+          />
+          <TextField
+            name="Description"
+            label="Description"
+            value={currentTarget.description}
+            onChange={(e) => setCurrentTarget({ ...currentTarget, description: e.target.value })}
+            multiline
+          />
+          {isError && <Alert severity="error">{errorMessage}</Alert>}
+          {succ && <Alert severity="success">Job Updated Successfully</Alert>}
+          <Button
+            variant="contained"
+            onClick={async (e) => {
+              e.preventDefault();
+              const res = await fetch(`${ENDPOINT}/api/jobs/update/${myId}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  ...currentTarget,
+                  is_approved: false,
+                }),
+              });
+              const Rdata = await res.json();
+              if (!res.ok) {
+                setIsError(true);
+                setErrorMessage(Rdata.error);
+                console.log(Rdata);
+                return;
+              }
+              setSucc(true);
+              toggleSDrawer(anchor, false);
+              setOpenOff(false);
+              myFetch();
+            }}
+          >
+            Save
+          </Button>
+        </Stack>
+      </Card>
+    </Container>
   );
 }
